@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+gem 'sinatra'
+gem 'ruby_algebra', git: 'ssh://gitea@gitea.slavasil.ru:3022/Slavasil/RubyAlgebra.git'
+gem 'rackup'
+gem 'puma'
