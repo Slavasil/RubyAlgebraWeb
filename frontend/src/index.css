@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply min-h-screen bg-gradient-to-br from-mist-50 via-cloud-50 to-blush-50 text-slate-700;
+  font-family: 'Nunito', 'Helvetica Neue', Arial, sans-serif;
+}
+
+input, select {
+  @apply rounded-xl border border-cloud-200 bg-white/80 px-3 py-2 text-slate-700 shadow-sm outline-none transition focus:border-mist-300 focus:ring-2 focus:ring-mist-200;
+}
+
+label {
+  @apply text-sm font-medium text-slate-600;
+}
