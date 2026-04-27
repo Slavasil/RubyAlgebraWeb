@@ -1,33 +1,28 @@
-# Sinatra RubyAlgebra Project
+# Веб-приложение для гема RubyAlgebra
 
-This is a minimal Sinatra application that uses the ruby_algebra gem.
+Это бэкенд на Sinatra и фронтенд на React.JS, предоставляющие пользовательский интерфейс для гема RubyAlgebra.
 
-## Setup
+## Запуск бэкенда
 
-1. Install dependencies:
+1. Установить зависимости:
    ```bash
    bundle install
    ```
 
-2. Run the application:
+2. Запустить приложение:
    ```bash
    bundle exec ruby app.rb
    ```
-   or
+   или
    ```bash
    bundle exec rackup
    ```
 
-3. Visit http://localhost:4567 in your browser.
+3. Бэкенд будет доступен по адресу http://localhost:4567/
 
-## Endpoints
-
-- `GET /` - Returns a greeting message
-- `GET /algebra` - Demonstrates usage of the ruby_algebra gem
-
-## Dependencies
+## Зависимости
 
 - Sinatra
-- ruby_algebra (from https://gitea.slavasil.ru/Slavasil/RubyAlgebra.git)
-- Puma (web server)
+- ruby_algebra (https://gitea.slavasil.ru/Slavasil/RubyAlgebra.git)
+- Puma
 - Rackup
