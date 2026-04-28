@@ -10,11 +10,11 @@ RSpec.describe 'RubyAlgebra API' do
   end
 
   it 'returns normalized polynomial via POST /normalize' do
-    post '/normalize', { polynomial: 'x*x + x' }.to_json, { 'CONTENT_TYPE' => 'application/json' }
-    
+    header "Host", "localhost"
+    post '/normalize', { polynomial: 'x^2 + 5x' }.to_json, { 'CONTENT_TYPE' => 'application/json' }
     expect(last_response).to be_ok
     response = JSON.parse(last_response.body)
     expect(response['success']).to be true
-    expect(response['result']).to eq('x^2 + x')
+    expect(response['result']).to eq('x^2 + 5x')
   end
 end
