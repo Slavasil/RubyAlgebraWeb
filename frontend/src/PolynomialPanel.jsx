@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const letters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(97 + i));
 
@@ -16,12 +16,78 @@ function useDebouncedValue(value, delayMs) {
 export default function PolynomialPanel() {
   const [input, setInput] = useState('');
   const [variable, setVariable] = useState('x');
+  const [normalized, setNormalized] = useState('');
+  const [differentiated, setDifferentiated] = useState('');
+  const [error, setError] = useState('');
 
   const debouncedInput = useDebouncedValue(input, 300);
 
-  const mirroredOutput = useMemo(() => {
-    return debouncedInput.trim();
-  }, [debouncedInput]);
+  useEffect(() => {
+    const trimmed = debouncedInput.trim();
+    if (!trimmed) {
+      setNormalized('');
+      setDifferentiated('');
+      setError('');
+      return;
+    }
+
+    const controller = new AbortController();
+    const baseUrl = 'http://localhost:9292';
+
+    const requestJson = async (path, payload) => {
+      const response = await fetch(`${baseUrl}${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        throw new Error('Invalid JSON response from server');
+      }
+
+      if (!response.ok) {
+        throw new Error(data?.error || `Request failed with status ${response.status}`);
+      }
+
+      if (!data || typeof data.success !== 'boolean') {
+        throw new Error('Unexpected response format');
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || 'Unknown server error');
+      }
+
+      return data.result ?? '';
+    };
+
+    const run = async () => {
+      try {
+        setError('');
+        const [normalizedResult, differentiatedResult] = await Promise.all([
+          requestJson('/normalize', { polynomial: trimmed }),
+          requestJson('/differentiate', { polynomial: trimmed, variable }),
+        ]);
+
+        setNormalized(normalizedResult);
+        setDifferentiated(differentiatedResult);
+      } catch (requestError) {
+        if (requestError.name === 'AbortError') {
+          return;
+        }
+        setError(requestError.message || 'Network error');
+        setNormalized('');
+        setDifferentiated('');
+      }
+    };
+
+    run();
+
+    return () => controller.abort();
+  }, [debouncedInput, variable]);
 
   return (
     <main className="min-h-screen w-full bg-gradient-to-br from-mist-50 via-cloud-50 to-blush-50 px-6 py-10">
@@ -43,6 +109,12 @@ export default function PolynomialPanel() {
                 onChange={(event) => setInput(event.target.value)} />
             </div>
 
+            {error ? (
+              <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
+                {error}
+              </div>
+            ) : null}
+
             <hr/>
 
             <div className="grid grid-cols-[180px_1fr] items-center gap-4">
@@ -50,7 +122,7 @@ export default function PolynomialPanel() {
               <input
                 id="poly-normalized"
                 type="text"
-                value={mirroredOutput}
+                value={normalized}
                 readOnly />
             </div>
 
@@ -68,7 +140,7 @@ export default function PolynomialPanel() {
                 ))}
               </select>
               <span className="text-slate-500">:</span>
-              <input type="text" value={mirroredOutput} readOnly />
+              <input type="text" value={differentiated} readOnly />
             </div>
           </div>
         </section>
