@@ -16,7 +16,7 @@ end
 
 helpers do
   def parse_poly(string)
-    RubyAlgebra::Parser.parse(string)
+    RubyAlgebra::Parser.parse_polynomial(RubyAlgebra::Parser::Tokenizer.new(string))
   end
 end
 
