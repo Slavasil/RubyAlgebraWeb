@@ -1,0 +1,26 @@
+name: deploy
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload and rebuild via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVKEY }}
+          script: |
+            set -e
+            cd /var/www/RubyAlgebraWeb
+            git pull origin master
+            cd frontend
+            npm ci
+            npm run build
+            cd ..
+            bundle install --without development test
+            sudo systemctl restart rubyalgebra-web
