@@ -22,6 +22,6 @@ jobs:
             npm ci
             npm run build
             cd ..
-            bundle config set without development test
-            bundle install
+            $HOME/.rbenv/shims/bundle config set without development test
+            $HOME/.rbenv/shims/bundle install
             sudo systemctl restart rubyalgebra-web
