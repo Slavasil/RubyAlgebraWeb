@@ -2,6 +2,7 @@ require 'sinatra'
 require 'json'
 require 'ruby_algebra'
 
+set :host_authorization, { permitted_hosts: ["localhost", "127.0.0.1", "ruby.slavasil.ru"] }
 
 before do
   content_type :json
