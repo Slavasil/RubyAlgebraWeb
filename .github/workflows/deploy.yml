@@ -22,5 +22,6 @@ jobs:
             npm ci
             npm run build
             cd ..
-            bundle install --without development test
+            bundle config set without development test
+            bundle install
             sudo systemctl restart rubyalgebra-web
