@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { API_BASE_URL } from './config.js';
 
 const letters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(97 + i));
+
+const apiBaseUrl = API_BASE_URL || 'http://localhost:9292';
 
 function useDebouncedValue(value, delayMs) {
   const [debounced, setDebounced] = useState(value);
@@ -42,7 +45,7 @@ export default function PolynomialPanel() {
 
     const controller = new AbortController();
     const requestJson = async (path, payload) => {
-      const response = await fetch(`http://localhost:9292${path}`, {
+      const response = await fetch(`${apiBaseUrl}${path}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -94,7 +97,7 @@ export default function PolynomialPanel() {
     run();
 
     return () => controller.abort();
-  }, [debouncedInput, variable]);
+  }, [debouncedInput, variable, apiBaseUrl]);
 
   useEffect(() => {
     const first = debouncedBinaryFirst.trim();
@@ -108,7 +111,7 @@ export default function PolynomialPanel() {
     const controller = new AbortController();
 
     const requestJson = async (path, payload) => {
-      const response = await fetch(`http://localhost:9292${path}`, {
+      const response = await fetch(`${apiBaseUrl}${path}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -161,7 +164,7 @@ export default function PolynomialPanel() {
     run();
 
     return () => controller.abort();
-  }, [debouncedBinaryFirst, debouncedBinarySecond, binaryOperation]);
+  }, [debouncedBinaryFirst, debouncedBinarySecond, binaryOperation, apiBaseUrl]);
 
   return (
     <main className="min-h-screen w-full bg-gradient-to-br from-mist-50 via-cloud-50 to-blush-50 px-6 py-10">
