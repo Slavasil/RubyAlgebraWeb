@@ -34,7 +34,6 @@ end
 post '/differentiate' do
   data = JSON.parse(request.body.read)
   poly = parse_poly(data['polynomial'])
-  # В твоем файле polynomial.rb метод называется .diff
   result = poly.diff(data['variable'])
   { success: true, result: result.to_s }.to_json
 rescue => e
